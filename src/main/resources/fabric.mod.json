@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "id": "${mod_id}",
+  "version": "${version}",
+  "name": "Ghost Nether Fix",
+  "description": "Implementation of MC-199487 pre-1.16.4",
+  "authors": [
+    "tildejustin"
+  ],
+  "contact": {
+    "sources": "https://www"
+  },
+  "license": "MIT",
+  "environment": "client",
+  "mixins": [
+    "ghost_nether_fix.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.12.12",
+    "minecraft": "<1.16.4"
+  }
+}

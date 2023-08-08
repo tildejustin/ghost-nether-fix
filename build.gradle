@@ -1,0 +1,70 @@
+plugins {
+    id "fabric-loom" version "1.3-SNAPSHOT"
+    id "io.github.juuxel.loom-vineflower" version "1.11.0"
+    id "org.ajoberstar.grgit" version "5.2.0"
+}
+
+version = "${getVersionMetadata()}+$target_version"
+group = maven_group
+
+base {
+    //noinspection GrDeprecatedAPIUsage
+    archivesBaseName = archives_base_name
+}
+
+repositories {
+    maven { url "https://jitpack.io" }
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:$minecraft_version"
+//    mappings "com.github.RedLime:yarn:$project.yarn_mappings:v2"
+    mappings loom.officialMojangMappings()
+    modImplementation "net.fabricmc:fabric-loader:$loader_version"
+}
+
+processResources {
+    inputs.property "version", version
+    inputs.property "mod_id", base.archivesName.get()
+
+    filesMatching("fabric.mod.json") {
+        expand "version": version, "mod_id": base.archivesName.get()
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    it.options.encoding = "UTF-8"
+    it.options.release.set(8)
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+jar {
+    from("LICENSE") {
+        rename { "${it}_${base.archivesName.get()}" }
+    }
+}
+
+vineflower {
+    toolVersion = "1.9.2"
+}
+
+
+@SuppressWarnings(["GrMethodMayBeStatic", "GrUnresolvedAccess"])
+def getVersionMetadata() {
+    // CI build version numbers
+    def build_id = System.getenv("RELEASE_TAG")
+    if (build_id != null) return build_id
+
+    // development builds
+    if (grgit == null) return "dev"
+
+    // named development builds
+    def id = grgit.head().getAbbreviatedId()
+    if (!grgit.status().clean) id += "-dirty"
+
+    return "rev.$id"
+}
