@@ -1,0 +1,3 @@
+## Ghost Nether Fix
+
+This mod is a backport of the infamous [MC-199487](https://bugs.mojang.com/browse/MC-199487) fix from `1.16.4`, which causes the server to crash as a worker thread, after generating a lake, is looking for a pending chunk, but as the main thread is blocked, it will never get that chunk and causes a deadlock. More information can be found on the initial Paper bug report, https://github.com/PaperMC/Paper/issues/4272.
